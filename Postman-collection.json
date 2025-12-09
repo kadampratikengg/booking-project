@@ -1,0 +1,36 @@
+{
+    "info": {
+      "name": "Booking API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Send OTP",
+        "request": {
+          "method": "POST",
+          "header": [{"key":"Content-Type","value":"application/json"}],
+          "url": {"raw":"{{baseUrl}}/api/auth/send-otp","host":["{{baseUrl}}"], "path":["api","auth","send-otp"]},
+          "body": {"mode":"raw","raw":"{\"mobile\":\"9999999999\"}"}
+        }
+      },
+      {
+        "name":"Verify OTP",
+        "request":{
+          "method":"POST",
+          "header":[{"key":"Content-Type","value":"application/json"}],
+          "url":{"raw":"{{baseUrl}}/api/auth/verify-otp","host":["{{baseUrl}}"],"path":["api","auth","verify-otp"]},
+          "body":{"mode":"raw","raw":"{\"mobile\":\"9999999999\",\"code\":\"123456\",\"role\":\"customer\"}"}
+        }
+      },
+      {
+        "name":"Request Ride",
+        "request":{
+          "method":"POST",
+          "header":[{"key":"Authorization","value":"Bearer {{token}}"},{"key":"Content-Type","value":"application/json"}],
+          "url":{"raw":"{{baseUrl}}/api/ride/request","host":["{{baseUrl}}"],"path":["api","ride","request"]},
+          "body":{"mode":"raw","raw":"{\"pickup\":{\"address\":\"A\"},\"drop\":{\"address\":\"B\"},\"distanceKm\":3.2,\"vehicleType\":\"bike\"}"}
+        }
+      }
+    ]
+  }
+  
