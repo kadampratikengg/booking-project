@@ -1,54 +1,77 @@
-import { useState } from "react";
-import api from "../api/api";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import api from '../api/api';
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import '../styles/styles.css';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
 
     try {
-      const res = await api.post("/auth/admin-login", { email, password });
-      localStorage.setItem("adminToken", res.data.token);
-      navigate("/");
+      const res = await api.post('/admin-auth/login', { email, password });
+      localStorage.setItem('adminToken', res.data.token);
+      toast.success('Login successful! Redirecting...');
+      setTimeout(() => navigate('/'), 1000);
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <form style={styles.card} onSubmit={handleLogin}>
-        <h2>Admin Login</h2>
+    <div className='center' style={styles.container}>
+      <form className='card' style={styles.card} onSubmit={handleLogin}>
+        <h2 style={styles.title}>Admin Login</h2>
 
-        {error && <p style={styles.error}>{error}</p>}
+        <div className='form-row'>
+          <input
+            type='email'
+            placeholder='Admin Email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className='input'
+            required
+          />
+        </div>
 
-        <input
-          type="email"
-          placeholder="Admin Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-          required
-        />
+        <div className='form-row'>
+          <input
+            type='password'
+            placeholder='Admin Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className='input'
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Admin Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          required
-        />
-
-        <button style={styles.button} type="submit">
-          Login
+        <button
+          className='button'
+          type='submit'
+          style={styles.buttonFull}
+          disabled={loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
+
+        <div style={styles.linksContainer}>
+          <Link to='/register' className='link'>
+            Create Account
+          </Link>
+          <span style={styles.separator}>•</span>
+          <Link to='/forgot' className='link'>
+            Forgot Password?
+          </Link>
+        </div>
       </form>
     </div>
   );
@@ -56,41 +79,38 @@ export default function Login() {
 
 const styles = {
   container: {
-    height: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#f5f5f5",
+    height: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#f6f8fb',
   },
   card: {
-    width: "300px",
-    padding: "20px",
-    background: "#fff",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-    textAlign: "center",
+    width: '340px',
+    padding: '32px',
+    background: '#fff',
+    borderRadius: '10px',
+    boxShadow: '0 6px 18px rgba(8, 15, 52, 0.06)',
   },
-  input: {
-    width: "100%",
-    padding: "10px",
-    margin: "10px 0",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-    fontSize: "16px",
+  title: {
+    fontSize: '24px',
+    marginBottom: '24px',
+    textAlign: 'center',
+    color: '#1f2937',
   },
-  button: {
-    width: "100%",
-    padding: "10px",
-    background: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    fontSize: "16px",
-    cursor: "pointer",
+  buttonFull: {
+    width: '100%',
+    marginTop: '16px',
+    marginBottom: '24px',
   },
-  error: {
-    color: "red",
-    marginBottom: "10px",
-    fontSize: "14px",
+  linksContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '12px',
+    fontSize: '14px',
+  },
+  separator: {
+    color: '#d1d5db',
   },
 };
