@@ -11,4 +11,7 @@ logs/
 # Ignore build output
 dist/
 build/
+
+# Ignore package files
 package-lock.json
+package.json
